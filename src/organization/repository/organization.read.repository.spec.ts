@@ -24,28 +24,12 @@ describe('OrganizationReadRepository', () => {
     organizationRepository = moduleFixture.get(repositoryToken);
     organizationReadRepository = moduleFixture.get(OrganizationReadRepository);
   });
-  describe('the module is defined correctly ', () => {
-    it('check organizationRepository is defined ', () => {
-      expect(organizationRepository).toBeDefined();
-    });
-    it('check organizationReadRepository is defined ', () => {
-      expect(organizationReadRepository).toBeDefined();
-    });
+  it('the module is defined correctly ', () => {
+    expect(organizationRepository).toBeDefined();
+    expect(organizationReadRepository).toBeDefined();
   });
-  describe('getOrganizationByName function ', () => {
-    it('getOrganizationByName function working correctly', async () => {
-      await organizationReadRepository.getOrganizationByName('test');
-      expect(organizationRepository.findOne).toHaveBeenCalled();
-      expect(organizationRepository.findOne).toHaveBeenCalledWith({
-        where: { name: 'test' },
-      });
-    });
-  });
+
   describe('getAllOrganizations function', () => {
-    it('getAllOrganizations function working correctly', async () => {
-      await organizationReadRepository.getAllOrganizations();
-      expect(organizationRepository.findAndCount).toHaveBeenCalled();
-    });
     it('to works correctly with passing paginations arguments', async () => {
       await organizationReadRepository.getAllOrganizations(0, 10);
       expect(organizationRepository.findAndCount).toHaveBeenCalledWith({

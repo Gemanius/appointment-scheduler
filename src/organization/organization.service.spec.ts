@@ -30,23 +30,16 @@ describe('Organization Service', () => {
         },
       ],
     }).compile();
-
     organizationReadRepository = moduleFixture.get(OrganizationReadRepository);
     organizationWriteRepository = moduleFixture.get(
       OrganizationWriteRepository,
     );
     organizationService = moduleFixture.get(OrganizationService);
   });
-  describe('module defined correctly', () => {
-    it('organizationWriteRepository should be defined', () => {
-      expect(organizationWriteRepository).toBeDefined();
-    });
-    it('organizationReadRepository should be defined', () => {
-      expect(organizationReadRepository).toBeDefined();
-    });
-    it('organizationService is defined correctly', () => {
-      expect(organizationService).toBeDefined();
-    });
+  it('module defined correctly', () => {
+    expect(organizationWriteRepository).toBeDefined();
+    expect(organizationReadRepository).toBeDefined();
+    expect(organizationService).toBeDefined();
   });
   describe('createOrganization function', () => {
     it('expect to call organization.getOrganizationByName ', async () => {

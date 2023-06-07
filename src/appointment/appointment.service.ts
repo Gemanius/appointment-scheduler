@@ -11,11 +11,11 @@ import {
   GetAppointmentsDto,
   UpdateAppointmentDto,
 } from './dto/appointment.dto';
-import { OrganizationWriteRepository } from 'src/organization/repository/organization.write.repository';
+import { OrganizationWriteRepository } from '../organization/repository/organization.write.repository';
 import { ChangeHistoryDto } from './dto/changes-history.dto';
 import { ChangeHistoryEnum } from './enum/changes-history.enum';
 import { OrganizationAppointmentEntity } from './entity/organization-appointment.entity';
-import { OrganizationReadRepository } from 'src/organization/repository/organization.read.repository';
+import { OrganizationReadRepository } from '../organization/repository/organization.read.repository';
 import { OrganizationAppointmentWriteRepository } from './repository/appoinment.write.repository';
 
 @Injectable()
@@ -93,6 +93,11 @@ export class AppointmentService {
         await this.orgAppointmentWriteRepository.getAppointmentById(
           data.id,
           queryRunner,
+        );
+      if (!appointment)
+        throw new HttpException(
+          'the appointment id is incorrect',
+          HttpStatus.NOT_FOUND,
         );
       const isAppointmentBelongsToOrganization = appointment.organizations.find(
         (elem) => elem.id == data.updaterId,
@@ -176,22 +181,6 @@ export class AppointmentService {
     } finally {
       await queryRunner.release();
     }
-  }
-  organizationAppointmentSchemaGenerator(
-    data: [OrganizationAppointmentEntity[], number],
-    organizationId: number,
-  ) {
-    const appointments = data[0].map((elem) => {
-      const { softDelete, history, organizations, ...restData } = elem;
-      return {
-        ...restData,
-        organization: organizations.find((elem2) => elem2.id != organizationId),
-      };
-    });
-    return {
-      appointments,
-      count: data[1],
-    };
   }
   async getAllOrganizationAppointments(
     organizationId: number,

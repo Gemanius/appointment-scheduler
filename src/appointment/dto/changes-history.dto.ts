@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ChangeHistoryEnum } from '../enum/changes-history.enum';
-import { OrganizationsEntity } from 'src/organization/entity/organization.entity';
-import { OrganizationAppointmentEntity } from '../entity/organization-appointment.entity';
+import { OrganizationDto } from '../../organization/dto/organization.dto';
+import { AppointmentDto } from './appointment.dto';
 
 export class ChangeHistoryDto {
   @ApiProperty({ type: ChangeHistoryEnum })
@@ -10,8 +10,8 @@ export class ChangeHistoryDto {
   startDate?: Date;
   @ApiProperty({ type: Date })
   endDate?: Date;
-  @ApiProperty({ type: OrganizationsEntity })
-  organization: OrganizationsEntity;
-  @ApiProperty({ type: OrganizationAppointmentEntity })
-  appointment: OrganizationAppointmentEntity;
+  @ApiProperty({ type: OrganizationDto })
+  organization: OrganizationDto;
+  @ApiProperty({ type: AppointmentDto })
+  appointment: AppointmentDto;
 }

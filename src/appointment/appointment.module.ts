@@ -10,7 +10,7 @@ import { OrganizationAppointmentReadRepository } from './repository/appointment.
 
 import { OrganizationAppointmentEntity } from './entity/organization-appointment.entity';
 import { AppointmentsChangesHistoryEntity } from './entity/appointments-changes-history.entity';
-import { OrganizationModule } from 'src/organization/organization.module';
+import { OrganizationModule } from '../organization/organization.module';
 import { OrganizationAppointmentWriteRepository } from './repository/appoinment.write.repository';
 
 @Module({

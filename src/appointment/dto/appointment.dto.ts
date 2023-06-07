@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
-import { OrganizationDto } from 'src/organization/dto/organization.dto';
+import { OrganizationDto } from '../../organization/dto/organization.dto';
 
 export class AppointmentDto {
   @ApiProperty({ type: Number })
@@ -33,7 +33,7 @@ export class CreateAppointmentDto implements AppointmentDto {
   @ApiProperty({ type: Date })
   endDate: Date;
 }
-export class UpdateAppointmentDto implements AppointmentDto {
+export class UpdateAppointmentDto {
   @IsInt()
   @IsNotEmpty()
   @ApiProperty({ type: Number })
@@ -45,11 +45,11 @@ export class UpdateAppointmentDto implements AppointmentDto {
   @IsDateString()
   @IsOptional()
   @ApiProperty({ type: Date })
-  startDate: Date;
+  startDate?: Date;
   @IsDateString()
   @IsOptional()
   @ApiProperty({ type: Date })
-  endDate: Date;
+  endDate?: Date;
 }
 export class GetAppointmentsDto extends AppointmentDto {
   @ApiProperty({ type: OrganizationDto })

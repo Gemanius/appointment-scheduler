@@ -7,7 +7,7 @@ import {
   CreateAppointmentDto,
   UpdateAppointmentDto,
 } from '../dto/appointment.dto';
-import { OrganizationsEntity } from 'src/organization/entity/organization.entity';
+import { OrganizationsEntity } from '../../organization/entity/organization.entity';
 import { ChangeHistoryDto } from '../dto/changes-history.dto';
 
 @Injectable()
