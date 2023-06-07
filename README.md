@@ -1,73 +1,33 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Appointment App
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is designed to handle appointments between organizations. It includes APIs to create new organizations, retrieve organization and its ID, and create appointments.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Technologies
 
-## Description
+The application is built with the NestJS framework and implemented with Express.js. Compared to Python technologies, it offers better performance and has a cleaner structure than pure Express.js. Its functionality can be updated to Fastify, which has higher speed than Express.js.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The database used is PostgreSQL, which has high performance for relational data. Due to the type of data being relational, this database was preferred.
 
-## Installation
+One of the design patterns used in this project is one of the concepts of CQRS. Although the command and query were not implemented, the databases were separated for read and write using Master-Slave replicas of PostgreSQL.
 
-```bash
-$ npm install
-```
+## Rules
 
-## Running the app
+For all mutations such as Post, Patch, and Delete, the transactions will be run, and if any errors occur, the application will roll back the transactions.
 
-```bash
-# development
-$ npm run start
+The application uses the repository pattern, which makes it cleaner. No logic was used in the repositories; they were only used for queries to the database.
 
-# watch mode
-$ npm run start:dev
+Write and read repositories are separated, but read repositories can be found in write repositories, which are used in transactions. Due to this, they were put there.
 
-# production mode
-$ npm run start:prod
-```
+## How to Run
 
-## Test
+1. Ensure that the Postgres Docker is running and WAL_stream is running.
+2. Run `docker-compose up` to run the application.
 
-```bash
-# unit tests
-$ npm run test
+## How to Test
 
-# e2e tests
-$ npm run test:e2e
+1. Use `npm run test` to run the tests.
+2. All connections to the database have been mocked.
 
-# test coverage
-$ npm run test:cov
-```
+## Conclusion
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+The Appointment App is a well-designed application that handles appointments between organizations. It uses the NestJS framework and PostgreSQL database, providing better performance and a cleaner structure. The application follows strict rules for mutations and uses the repository pattern to keep the code clean.
