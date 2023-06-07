@@ -23,23 +23,23 @@ export class OrganizationReadRepository {
 
   /// we can generate the schema of response with select
   /// it is defently faster due to better performance of Database
-  async currenctOrganizationAppoinment(organizationId: number, date?: Date) {
+  async currenctOrganizationAppointment(organizationId: number, date?: Date) {
     const now = date ? new Date(date) : new Date();
     return this.organizationRepository
       .createQueryBuilder('organization')
-      .leftJoinAndSelect('organization.appoinments', 'appoinments')
-      .leftJoinAndSelect('appoinments.organizations', 'appOrganizations')
+      .leftJoinAndSelect('organization.appointments', 'appointments')
+      .leftJoinAndSelect('appointments.organizations', 'appOrganizations')
       .where(
-        'appoinments.softDelete = false and organization.id = :organizationId',
+        'appointments.softDelete = false and organization.id = :organizationId',
         { organizationId },
       )
       .andWhere(
         new Brackets((qb) => {
-          qb.where('appoinments.startDate = :now', { now });
+          qb.where('appointments.startDate = :now', { now });
           qb.orWhere(
             new Brackets((qb2) => {
               qb2.where(
-                'appoinments.startDate < :now and appoinments.endDate > :now',
+                'appointments.startDate < :now and appointments.endDate > :now',
                 { now },
               );
             }),
@@ -50,11 +50,11 @@ export class OrganizationReadRepository {
   }
   /// we can generate the schema of response with select
   /// it is defently faster due to better performance of Database
-  async getAllOrganizationAppoinments(organizationId: number) {
+  async getAllOrganizationAppointments(organizationId: number) {
     return this.organizationRepository
       .createQueryBuilder('organization')
-      .leftJoinAndSelect('organization.appoinments', 'appoinments')
-      .leftJoinAndSelect('appoinments.organizations', 'appOrganizations')
+      .leftJoinAndSelect('organization.appointments', 'appointments')
+      .leftJoinAndSelect('appointments.organizations', 'appOrganizations')
       .where('organization.id = :organizationId', { organizationId })
       .getOne();
   }

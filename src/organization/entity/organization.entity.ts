@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { OrganizationAppoinmentEntity } from '../../appoinment/entity/organization-appoinment.entity';
-import { AppoinmentsChangesHistoryEntity } from '../../appoinment/entity/appoinments-changes-history.entity';
+import { OrganizationAppointmentEntity } from '../../appointment/entity/organization-appointment.entity';
+import { AppointmentsChangesHistoryEntity } from '../../appointment/entity/appointments-changes-history.entity';
 
 @Entity('organizations')
 export class OrganizationsEntity {
@@ -22,24 +22,24 @@ export class OrganizationsEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
   @ManyToMany(
-    () => OrganizationAppoinmentEntity,
-    (appoinment) => appoinment.organizations,
+    () => OrganizationAppointmentEntity,
+    (appointment) => appointment.organizations,
   )
   @JoinTable({
-    name: 'organization_appoinment_join_table',
+    name: 'organization_appointment_join_table',
     joinColumn: {
       name: 'organization_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'appoinment_id',
+      name: 'appointment_id',
       referencedColumnName: 'id',
     },
   })
-  appoinments?: OrganizationAppoinmentEntity[];
+  appointments?: OrganizationAppointmentEntity[];
   @OneToMany(
-    () => AppoinmentsChangesHistoryEntity,
+    () => AppointmentsChangesHistoryEntity,
     (changesHistory) => changesHistory.organization,
   )
-  changesHistory?: AppoinmentsChangesHistoryEntity[];
+  changesHistory?: AppointmentsChangesHistoryEntity[];
 }

@@ -1,13 +1,13 @@
 import { OrganizationModule } from './organization/organization.module';
-import { AppoinmentModule } from './appoinment/appoinment.module';
+import { AppointmentModule } from './appointment/appointment.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { PostgresDatabaseConfigDto } from './config/dto/database.config.dto';
-import { OrganizationAppoinmentEntity } from './appoinment/entity/organization-appoinment.entity';
+import { OrganizationAppointmentEntity } from './appointment/entity/organization-appointment.entity';
 import { OrganizationsEntity } from './organization/entity/organization.entity';
-import { AppoinmentsChangesHistoryEntity } from './appoinment/entity/appoinments-changes-history.entity';
+import { AppointmentsChangesHistoryEntity } from './appointment/entity/appointments-changes-history.entity';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { AppoinmentsChangesHistoryEntity } from './appoinment/entity/appoinments
       isGlobal: true,
     }),
     OrganizationModule,
-    AppoinmentModule,
+    AppointmentModule,
     TypeOrmModule.forRootAsync({
       name: 'write_db',
       inject: [ConfigService],
@@ -31,9 +31,9 @@ import { AppoinmentsChangesHistoryEntity } from './appoinment/entity/appoinments
           password: configs.password,
           database: configs.name,
           entities: [
-            OrganizationAppoinmentEntity,
+            OrganizationAppointmentEntity,
             OrganizationsEntity,
-            AppoinmentsChangesHistoryEntity,
+            AppointmentsChangesHistoryEntity,
           ],
           synchronize: true,
         };
@@ -53,9 +53,9 @@ import { AppoinmentsChangesHistoryEntity } from './appoinment/entity/appoinments
           password: configs.password,
           database: configs.name,
           entities: [
-            OrganizationAppoinmentEntity,
+            OrganizationAppointmentEntity,
             OrganizationsEntity,
-            AppoinmentsChangesHistoryEntity,
+            AppointmentsChangesHistoryEntity,
           ],
         };
       },

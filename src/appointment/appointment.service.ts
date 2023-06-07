@@ -5,22 +5,23 @@ https://docs.nestjs.com/providers#services
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { OrganizationAppoinmentWriteRepository } from './repository/appoinment.write.repository';
+
 import {
-  CreateAppoinmentDto,
-  GetAppoinmentsDto,
-  UpdateAppoinmentDto,
-} from './dto/appoinment.dto';
+  CreateAppointmentDto,
+  GetAppointmentsDto,
+  UpdateAppointmentDto,
+} from './dto/appointment.dto';
 import { OrganizationWriteRepository } from 'src/organization/repository/organization.write.repository';
 import { ChangeHistoryDto } from './dto/changes-history.dto';
 import { ChangeHistoryEnum } from './enum/changes-history.enum';
-import { OrganizationAppoinmentEntity } from './entity/organization-appoinment.entity';
+import { OrganizationAppointmentEntity } from './entity/organization-appointment.entity';
 import { OrganizationReadRepository } from 'src/organization/repository/organization.read.repository';
+import { OrganizationAppointmentWriteRepository } from './repository/appoinment.write.repository';
 
 @Injectable()
-export class AppoinmentService {
+export class AppointmentService {
   constructor(
-    private readonly orgAppoinmentWriteRepository: OrganizationAppoinmentWriteRepository,
+    private readonly orgAppointmentWriteRepository: OrganizationAppointmentWriteRepository,
     private readonly organizationWriteRepository: OrganizationWriteRepository,
     private readonly organizationReadRepository: OrganizationReadRepository,
     @InjectDataSource('write_db')
@@ -32,52 +33,52 @@ export class AppoinmentService {
     await queryRunner.startTransaction();
     return queryRunner;
   }
-  async createNewAppoinment(data: CreateAppoinmentDto) {
+  async createNewAppointment(data: CreateAppointmentDto) {
     const queryRunner = await this.setQueryRunner();
     try {
-      const appoinmentOrganization =
+      const appointmentOrganization =
         await this.organizationWriteRepository.getOrganizationsById(
           queryRunner,
           [data.invitedId, data.creatorId],
         );
-      if (appoinmentOrganization.length < 2)
+      if (appointmentOrganization.length < 2)
         throw new HttpException(
           'invited or creator organiztions id is wrong',
           HttpStatus.BAD_REQUEST,
         );
       const doesConfilict =
-        await this.orgAppoinmentWriteRepository.getConflictedAppoinmentForCreate(
+        await this.orgAppointmentWriteRepository.getConflictedAppointmentForCreate(
           queryRunner,
           data,
         );
       if (doesConfilict)
         throw new HttpException(
-          'the appoinment confilicts with other one in one of side',
+          'the appointment confilicts with other one in one of side',
           HttpStatus.BAD_REQUEST,
         );
 
-      const result = await this.orgAppoinmentWriteRepository.createAppoinment(
+      const result = await this.orgAppointmentWriteRepository.createAppointment(
         queryRunner,
         data,
-        appoinmentOrganization,
+        appointmentOrganization,
       );
 
       const newHistory = new ChangeHistoryDto();
       newHistory.action = ChangeHistoryEnum.create;
       newHistory.startDate = data.startDate;
       newHistory.endDate = data.endDate;
-      newHistory.appoinment = result;
-      newHistory.organization = appoinmentOrganization.find(
+      newHistory.appointment = result;
+      newHistory.organization = appointmentOrganization.find(
         (elem) => elem.id == data.creatorId,
       );
 
-      const { softDelete, history, organizations, ...appoinmentData } = result;
-      await this.orgAppoinmentWriteRepository.createNewChangeHistroy(
+      const { softDelete, history, organizations, ...appointmentData } = result;
+      await this.orgAppointmentWriteRepository.createNewChangeHistroy(
         newHistory,
         queryRunner,
       );
       await queryRunner.commitTransaction();
-      return appoinmentData;
+      return appointmentData;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -85,55 +86,55 @@ export class AppoinmentService {
       await queryRunner.release();
     }
   }
-  async updateAppoinment(data: UpdateAppoinmentDto) {
+  async updateAppointment(data: UpdateAppointmentDto) {
     const queryRunner = await this.setQueryRunner();
     try {
-      const appoinment =
-        await this.orgAppoinmentWriteRepository.getAppointmentById(
+      const appointment =
+        await this.orgAppointmentWriteRepository.getAppointmentById(
           data.id,
           queryRunner,
         );
-      const isAppoinmentBelongsToOrganization = appoinment.organizations.find(
-        (elem) => elem.id == data.updatorId,
+      const isAppointmentBelongsToOrganization = appointment.organizations.find(
+        (elem) => elem.id == data.updaterId,
       );
-      if (!isAppoinmentBelongsToOrganization)
+      if (!isAppointmentBelongsToOrganization)
         throw new HttpException(
-          'only the organization of appoinment can update it',
+          'only the organization of appointment can update it',
           HttpStatus.FORBIDDEN,
         );
-      appoinment.startDate = data?.startDate
+      appointment.startDate = data?.startDate
         ? data.startDate
-        : appoinment.startDate;
-      appoinment.endDate = data?.endDate ? data.endDate : appoinment.endDate;
+        : appointment.startDate;
+      appointment.endDate = data?.endDate ? data.endDate : appointment.endDate;
       const doesConfilict =
-        await this.orgAppoinmentWriteRepository.getConflictedAppoinmentForUpdate(
-          appoinment,
+        await this.orgAppointmentWriteRepository.getConflictedAppointmentForUpdate(
+          appointment,
           queryRunner,
         );
       if (doesConfilict)
         throw new HttpException(
-          'the appoinment confilicts with other one in one of side',
+          'the appointment confilicts with other one in one of side',
           HttpStatus.BAD_REQUEST,
         );
-      const result = await this.orgAppoinmentWriteRepository.updateAppoinment(
-        appoinment,
+      const result = await this.orgAppointmentWriteRepository.updateAppointment(
+        appointment,
         queryRunner,
       );
 
       const newHistory = new ChangeHistoryDto();
       newHistory.action = ChangeHistoryEnum.update;
-      newHistory.organization = isAppoinmentBelongsToOrganization;
+      newHistory.organization = isAppointmentBelongsToOrganization;
       newHistory.startDate = data?.startDate ? data.startDate : null;
       newHistory.endDate = data?.endDate ? data.endDate : null;
-      newHistory.appoinment = appoinment;
-      const { softDelete, history, organizations, ...appoinmentData } = result;
-      await this.orgAppoinmentWriteRepository.createNewChangeHistroy(
+      newHistory.appointment = appointment;
+      const { softDelete, history, organizations, ...appointmentData } = result;
+      await this.orgAppointmentWriteRepository.createNewChangeHistroy(
         newHistory,
         queryRunner,
       );
 
       await queryRunner.commitTransaction();
-      return appoinmentData;
+      return appointmentData;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -141,29 +142,29 @@ export class AppoinmentService {
       await queryRunner.release();
     }
   }
-  async deleteAppoinment(organizationId: number, appoinmentId: number) {
+  async deleteAppointment(organizationId: number, appointmentId: number) {
     const queryRunner = await this.setQueryRunner();
     try {
-      const checkedAppoinment: OrganizationAppoinmentEntity =
-        await this.orgAppoinmentWriteRepository.checkAppoinmentContainsOrganization(
+      const checkedAppointment: OrganizationAppointmentEntity =
+        await this.orgAppointmentWriteRepository.checkAppointmentContainsOrganization(
           organizationId,
-          appoinmentId,
+          appointmentId,
           queryRunner,
         );
-      if (!checkedAppoinment || checkedAppoinment.organizations.length == 0)
+      if (!checkedAppointment || checkedAppointment.organizations.length == 0)
         throw new HttpException(
-          'only organizations in the appoinment can delete',
+          'only organizations in the appointment can delete',
           HttpStatus.FORBIDDEN,
         );
-      await this.orgAppoinmentWriteRepository.deleteAppoinment(
-        checkedAppoinment,
+      await this.orgAppointmentWriteRepository.deleteAppointment(
+        checkedAppointment,
         queryRunner,
       );
       const newHistory = new ChangeHistoryDto();
       newHistory.action = ChangeHistoryEnum.delete;
-      newHistory.appoinment = checkedAppoinment;
-      newHistory.organization = checkedAppoinment.organizations[0];
-      await this.orgAppoinmentWriteRepository.createNewChangeHistroy(
+      newHistory.appointment = checkedAppointment;
+      newHistory.organization = checkedAppointment.organizations[0];
+      await this.orgAppointmentWriteRepository.createNewChangeHistroy(
         newHistory,
         queryRunner,
       );
@@ -176,11 +177,11 @@ export class AppoinmentService {
       await queryRunner.release();
     }
   }
-  organizationAppoinmentSchemaGenerator(
-    data: [OrganizationAppoinmentEntity[], number],
+  organizationAppointmentSchemaGenerator(
+    data: [OrganizationAppointmentEntity[], number],
     organizationId: number,
   ) {
-    const appoinments = data[0].map((elem) => {
+    const appointments = data[0].map((elem) => {
       const { softDelete, history, organizations, ...restData } = elem;
       return {
         ...restData,
@@ -188,20 +189,20 @@ export class AppoinmentService {
       };
     });
     return {
-      appoinments,
+      appointments,
       count: data[1],
     };
   }
-  async getAllOrganizationAppoinments(
+  async getAllOrganizationAppointments(
     organizationId: number,
-  ): Promise<GetAppoinmentsDto[]> {
+  ): Promise<GetAppointmentsDto[]> {
     const result =
-      await this.organizationReadRepository.getAllOrganizationAppoinments(
+      await this.organizationReadRepository.getAllOrganizationAppointments(
         organizationId,
       );
     if (!result)
       throw new HttpException('organization not found', HttpStatus.NOT_FOUND);
-    const finalResponse = result?.appoinments.map((elem) => {
+    const finalResponse = result?.appointments.map((elem) => {
       const { softDelete, history, organizations, ...restData } = elem;
 
       return {
@@ -211,18 +212,18 @@ export class AppoinmentService {
     });
     return finalResponse;
   }
-  async currenctAppoinment(
+  async currenctAppointment(
     organizationId: number,
     date?: Date,
-  ): Promise<GetAppoinmentsDto> {
+  ): Promise<GetAppointmentsDto> {
     const result =
-      await this.organizationReadRepository.currenctOrganizationAppoinment(
+      await this.organizationReadRepository.currenctOrganizationAppointment(
         organizationId,
         date,
       );
     if (!result)
-      throw new HttpException('appoinment not found', HttpStatus.NOT_FOUND);
-    const { organizations, ...restData } = result.appoinments[0];
+      throw new HttpException('appointment not found', HttpStatus.NOT_FOUND);
+    const { organizations, ...restData } = result.appointments[0];
     return {
       with: organizations.find((elem) => elem.id != organizationId),
       ...restData,

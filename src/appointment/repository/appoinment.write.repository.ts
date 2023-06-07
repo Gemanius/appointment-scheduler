@@ -1,22 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrganizationAppoinmentEntity } from '../entity/organization-appoinment.entity';
+import { OrganizationAppointmentEntity } from '../entity/organization-appointment.entity';
 import { Brackets, QueryRunner, Repository } from 'typeorm';
-import { AppoinmentsChangesHistoryEntity } from '../entity/appoinments-changes-history.entity';
+import { AppointmentsChangesHistoryEntity } from '../entity/appointments-changes-history.entity';
 import {
-  CreateAppoinmentDto,
-  UpdateAppoinmentDto,
-} from '../dto/appoinment.dto';
+  CreateAppointmentDto,
+  UpdateAppointmentDto,
+} from '../dto/appointment.dto';
 import { OrganizationsEntity } from 'src/organization/entity/organization.entity';
 import { ChangeHistoryDto } from '../dto/changes-history.dto';
 
 @Injectable()
-export class OrganizationAppoinmentWriteRepository {
+export class OrganizationAppointmentWriteRepository {
   constructor(
-    @InjectRepository(OrganizationAppoinmentEntity, 'write_db')
-    private readonly orgAppoinmentRepository: Repository<OrganizationAppoinmentEntity>,
-    @InjectRepository(AppoinmentsChangesHistoryEntity, 'write_db')
-    private readonly historyRepository: Repository<AppoinmentsChangesHistoryEntity>,
+    @InjectRepository(OrganizationAppointmentEntity, 'write_db')
+    private readonly orgAppointmentRepository: Repository<OrganizationAppointmentEntity>,
+    @InjectRepository(AppointmentsChangesHistoryEntity, 'write_db')
+    private readonly historyRepository: Repository<AppointmentsChangesHistoryEntity>,
   ) {}
   confilictQueryLogic(
     data: {
@@ -28,9 +28,9 @@ export class OrganizationAppoinmentWriteRepository {
     queryRunner: QueryRunner,
   ) {
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
-      .createQueryBuilder('appoinment')
-      .leftJoinAndSelect('appoinment.organizations', 'organization')
+      .getRepository(OrganizationAppointmentEntity)
+      .createQueryBuilder('appointment')
+      .leftJoinAndSelect('appointment.organizations', 'organization')
       .where(
         new Brackets((qb) => {
           qb.where(
@@ -49,7 +49,7 @@ export class OrganizationAppoinmentWriteRepository {
               qb2.where(
                 new Brackets((qb3) => {
                   qb3.where(
-                    'appoinment.startDate < :startDate and appoinment.endDate > :startDate',
+                    'appointment.startDate < :startDate and appointment.endDate > :startDate',
                     { ...data },
                   );
                 }),
@@ -57,7 +57,7 @@ export class OrganizationAppoinmentWriteRepository {
               qb2.orWhere(
                 new Brackets((qb3) => {
                   qb3.where(
-                    'appoinment.startDate < :endDate and appoinment.endDate > :endDate',
+                    'appointment.startDate < :endDate and appointment.endDate > :endDate',
                     { ...data },
                   );
                 }),
@@ -65,28 +65,28 @@ export class OrganizationAppoinmentWriteRepository {
               qb2.orWhere(
                 new Brackets((qb3) => {
                   qb3.where(
-                    'appoinment.startDate = :startDate and appoinment.endDate = :endDate',
+                    'appointment.startDate = :startDate and appointment.endDate = :endDate',
                     { ...data },
                   );
                 }),
               );
             }),
           );
-          qb.andWhere('appoinment.softDelete = false');
+          qb.andWhere('appointment.softDelete = false');
         }),
       );
   }
   // It is get !
   // the reason why I put this function here is based the functionality which I call this when I have transaction
   // for create or update and I should pass queryRunner which set by the write_db datasource !
-  async getConflictedAppoinmentForCreate(
+  async getConflictedAppointmentForCreate(
     queryRunner: QueryRunner,
-    data: CreateAppoinmentDto,
+    data: CreateAppointmentDto,
   ) {
     return this.confilictQueryLogic(data, queryRunner).getOne();
   }
-  async getConflictedAppoinmentForUpdate(
-    data: OrganizationAppoinmentEntity,
+  async getConflictedAppointmentForUpdate(
+    data: OrganizationAppointmentEntity,
     queryRunner: QueryRunner,
   ) {
     return this.confilictQueryLogic(
@@ -98,7 +98,7 @@ export class OrganizationAppoinmentWriteRepository {
       },
       queryRunner,
     )
-      .andWhere('appoinment.id != :appoinmentId', { appoinmentId: data.id })
+      .andWhere('appointment.id != :appointmentId', { appointmentId: data.id })
       .getOne();
   }
   async createNewChangeHistroy(
@@ -106,62 +106,62 @@ export class OrganizationAppoinmentWriteRepository {
     queryRunner?: QueryRunner,
   ) {
     const historyRepository = queryRunner
-      ? queryRunner.manager.getRepository(AppoinmentsChangesHistoryEntity)
+      ? queryRunner.manager.getRepository(AppointmentsChangesHistoryEntity)
       : this.historyRepository;
     const newHistory = historyRepository.create({ ...data });
     return historyRepository.save(newHistory);
   }
-  async createAppoinment(
+  async createAppointment(
     queryRunner: QueryRunner,
-    data: CreateAppoinmentDto,
+    data: CreateAppointmentDto,
     organizations: OrganizationsEntity[],
   ) {
-    const newAppoinment = this.orgAppoinmentRepository.create({
+    const newAppointment = this.orgAppointmentRepository.create({
       ...data,
       organizations,
     });
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
-      .save(newAppoinment);
+      .getRepository(OrganizationAppointmentEntity)
+      .save(newAppointment);
   }
-  async checkAppoinmentContainsOrganization(
+  async checkAppointmentContainsOrganization(
     organizationId: number,
-    appoinmentId: number,
+    appointmentId: number,
     queryRunner: QueryRunner,
   ) {
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
-      .createQueryBuilder('appoinment')
-      .leftJoinAndSelect('appoinment.organizations', 'organizations')
+      .getRepository(OrganizationAppointmentEntity)
+      .createQueryBuilder('appointment')
+      .leftJoinAndSelect('appointment.organizations', 'organizations')
       .where(
-        'organizations.id = :organizationId and appoinment.id = :appoinmentId',
-        { appoinmentId, organizationId },
+        'organizations.id = :organizationId and appointment.id = :appointmentId',
+        { appointmentId, organizationId },
       )
       .getOne();
   }
-  async deleteAppoinment(
-    apponment: OrganizationAppoinmentEntity,
+  async deleteAppointment(
+    apponment: OrganizationAppointmentEntity,
     queryRunner: QueryRunner,
   ) {
     apponment.softDelete = true;
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
+      .getRepository(OrganizationAppointmentEntity)
       .save(apponment);
   }
   async getAppointmentById(id: number, queryRunner: QueryRunner) {
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
-      .createQueryBuilder('appoinment')
-      .leftJoinAndSelect('appoinment.organizations', 'organizations')
-      .where('appoinment.id = :id', { id })
+      .getRepository(OrganizationAppointmentEntity)
+      .createQueryBuilder('appointment')
+      .leftJoinAndSelect('appointment.organizations', 'organizations')
+      .where('appointment.id = :id', { id })
       .getOne();
   }
-  async updateAppoinment(
-    data: OrganizationAppoinmentEntity,
+  async updateAppointment(
+    data: OrganizationAppointmentEntity,
     queryRunner: QueryRunner,
   ) {
     return queryRunner.manager
-      .getRepository(OrganizationAppoinmentEntity)
+      .getRepository(OrganizationAppointmentEntity)
       .save(data);
   }
 }

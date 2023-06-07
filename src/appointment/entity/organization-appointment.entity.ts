@@ -8,16 +8,16 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrganizationsEntity } from '../../organization/entity/organization.entity';
-import { AppoinmentsChangesHistoryEntity } from './appoinments-changes-history.entity';
+import { AppointmentsChangesHistoryEntity } from './appointments-changes-history.entity';
 
 // ToDo
 /*
-    we can put isInvitationAccepted for when an organization set appoinments for other one
-    and consider it impacts on our appoinment validations
+    we can put isInvitationAccepted for when an organization set appointments for other one
+    and consider it impacts on our appointment validations
 */
 
-@Entity('organization_appoinment')
-export class OrganizationAppoinmentEntity {
+@Entity('organization_appointment')
+export class OrganizationAppointmentEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
   @Column({ name: 'start_date', type: 'timestamptz', nullable: false })
@@ -32,12 +32,12 @@ export class OrganizationAppoinmentEntity {
   updatedAt: Date;
   @ManyToMany(
     () => OrganizationsEntity,
-    (organization) => organization.appoinments,
+    (organization) => organization.appointments,
   )
   organizations: OrganizationsEntity[];
   @OneToMany(
-    () => AppoinmentsChangesHistoryEntity,
-    (history) => history.appoinment,
+    () => AppointmentsChangesHistoryEntity,
+    (history) => history.appointment,
   )
-  history: AppoinmentsChangesHistoryEntity[];
+  history: AppointmentsChangesHistoryEntity[];
 }

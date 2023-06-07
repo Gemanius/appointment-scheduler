@@ -8,9 +8,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Sesami')
-    .setDescription('Organization appoinment handling')
+    .setDescription('Organization appointment handling')
     .setVersion('1.0')
-    .addTag('appoinments')
+    .addTag('appointments')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

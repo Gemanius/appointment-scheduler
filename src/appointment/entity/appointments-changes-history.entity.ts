@@ -6,12 +6,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrganizationAppoinmentEntity } from './organization-appoinment.entity';
+import { OrganizationAppointmentEntity } from './organization-appointment.entity';
 import { OrganizationsEntity } from '../../organization/entity/organization.entity';
 import { ChangeHistoryEnum } from '../enum/changes-history.enum';
 
-@Entity('appoinments_changes_history')
-export class AppoinmentsChangesHistoryEntity {
+@Entity('appointments_changes_history')
+export class AppointmentsChangesHistoryEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
   @Column({ name: 'action', enum: ChangeHistoryEnum, nullable: false })
@@ -32,9 +32,9 @@ export class AppoinmentsChangesHistoryEntity {
   })
   organization: OrganizationsEntity;
   @ManyToOne(
-    () => OrganizationAppoinmentEntity,
-    (appoinment) => appoinment.history,
+    () => OrganizationAppointmentEntity,
+    (appointment) => appointment.history,
   )
-  @JoinColumn({ name: 'appoinment_id', referencedColumnName: 'id' })
-  appoinment: OrganizationAppoinmentEntity;
+  @JoinColumn({ name: 'appointment_id', referencedColumnName: 'id' })
+  appointment: OrganizationAppointmentEntity;
 }

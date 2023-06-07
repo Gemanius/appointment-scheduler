@@ -12,7 +12,7 @@ services:
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_USERNAME=mahan
       - POSTGRESQL_PASSWORD=secret
-      - POSTGRESQL_DATABASE=appoinments
+      - POSTGRESQL_DATABASE=appointments
   postgresql-slave:
     image: 'bitnami/postgresql:latest'
     ports:
@@ -27,6 +27,7 @@ services:
       - POSTGRESQL_USERNAME=mahan
       - POSTGRESQL_PASSWORD=secret
       - POSTGRESQL_MASTER_PORT_NUMBER=5432
+
   app:
     stdin_open: true
     build:
@@ -40,12 +41,11 @@ services:
       - MASTER_DB_PORT=5432
       - MASTER_DB_USER=mahan
       - MASTER_DB_PASSWORD=secret
-      - MASTER_DB_NAME=appoinments
+      - MASTER_DB_NAME=appointments
       - SLAVE_DB_HOST=postgresql-slave
       - SLAVE_DB_PORT=5432
       - SLAVE_DB_USER=mahan
       - SLAVE_DB_PASSWORD=secret
-      - SLAVE_DB_NAME=appoinments
-
+      - SLAVE_DB_NAME=appointments
 volumes:
   postgresql_master_data:

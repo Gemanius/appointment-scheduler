@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 import { OrganizationDto } from 'src/organization/dto/organization.dto';
 
-export class AppoinmentDto {
+export class AppointmentDto {
   @ApiProperty({ type: Number })
   id?: number;
   @ApiProperty({ type: Date })
@@ -15,7 +15,7 @@ export class AppoinmentDto {
   updatedAt?: Date;
 }
 
-export class CreateAppoinmentDto implements AppoinmentDto {
+export class CreateAppointmentDto implements AppointmentDto {
   @IsInt()
   @IsNotEmpty()
   @ApiProperty({ type: Number })
@@ -33,7 +33,7 @@ export class CreateAppoinmentDto implements AppoinmentDto {
   @ApiProperty({ type: Date })
   endDate: Date;
 }
-export class UpdateAppoinmentDto implements AppoinmentDto {
+export class UpdateAppointmentDto implements AppointmentDto {
   @IsInt()
   @IsNotEmpty()
   @ApiProperty({ type: Number })
@@ -41,7 +41,7 @@ export class UpdateAppoinmentDto implements AppoinmentDto {
   @IsInt()
   @IsNotEmpty()
   @ApiProperty({ type: Number })
-  updatorId: number;
+  updaterId: number;
   @IsDateString()
   @IsOptional()
   @ApiProperty({ type: Date })
@@ -51,7 +51,7 @@ export class UpdateAppoinmentDto implements AppoinmentDto {
   @ApiProperty({ type: Date })
   endDate: Date;
 }
-export class GetAppoinmentsDto extends AppoinmentDto {
+export class GetAppointmentsDto extends AppointmentDto {
   @ApiProperty({ type: OrganizationDto })
   with: OrganizationDto;
 }
