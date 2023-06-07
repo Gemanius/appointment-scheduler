@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  postgresql-master:
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_master_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=mahan
+      - POSTGRESQL_PASSWORD=secret
+      - POSTGRESQL_DATABASE=appoinments
+  postgresql-slave:
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - '5433:5432'
+    depends_on:
+      - postgresql-master
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=postgresql-master
+      - POSTGRESQL_USERNAME=mahan
+      - POSTGRESQL_PASSWORD=secret
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+
+volumes:
+  postgresql_master_data:
