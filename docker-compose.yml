@@ -1,5 +1,4 @@
-version: '2'
-
+version: '3'
 services:
   postgresql-master:
     image: 'bitnami/postgresql:latest'
@@ -28,6 +27,25 @@ services:
       - POSTGRESQL_USERNAME=mahan
       - POSTGRESQL_PASSWORD=secret
       - POSTGRESQL_MASTER_PORT_NUMBER=5432
+  app:
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile
+      context: './'
+    depends_on:
+      - postgresql-slave
+      - postgresql-master
+    environment:
+      - MASTER_DB_HOST=postgresql-master
+      - MASTER_DB_PORT=5432
+      - MASTER_DB_USER=mahan
+      - MASTER_DB_PASSWORD=secret
+      - MASTER_DB_NAME=appoinments
+      - SLAVE_DB_HOST=postgresql-slave
+      - SLAVE_DB_PORT=5432
+      - SLAVE_DB_USER=mahan
+      - SLAVE_DB_PASSWORD=secret
+      - SLAVE_DB_NAME=appoinments
 
 volumes:
   postgresql_master_data:
