@@ -21,7 +21,8 @@ Write and read repositories are separated, but read repositories can be found in
 ## How to Run
 
 1. Ensure that the Postgres Docker is running and WAL_stream is running.
-2. Run `docker-compose up` to run the application.
+2. please set the values of env in the docker compose
+3. Run `docker-compose up` to run the application.
 
 ## How to Test
 
