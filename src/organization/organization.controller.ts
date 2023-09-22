@@ -33,6 +33,7 @@ export class OrganizationController {
   @ApiBadRequestResponse({ type: HttpException })
   @Post('create')
   async createOrganization(@Body() data: CreateOrganizationDto) {
+    console.log(data);
     return this.organizationService.createOrganization(data);
   }
 

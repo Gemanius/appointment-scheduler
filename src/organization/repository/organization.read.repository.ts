@@ -9,9 +9,9 @@ export class OrganizationReadRepository {
     @InjectRepository(OrganizationsEntity, 'read_db')
     private readonly organizationRepository: Repository<OrganizationsEntity>,
   ) {}
-  async getOrganizationByName(name: string) {
+  async getOrganizationByEmail(email: string) {
     const organization = await this.organizationRepository.findOne({
-      where: { name },
+      where: { email },
     });
     return organization;
   }

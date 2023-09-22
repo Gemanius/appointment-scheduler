@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,8 +21,10 @@ import { AppointmentsChangesHistoryEntity } from './appointments-changes-history
 export class OrganizationAppointmentEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
+  @Index('start_date')
   @Column({ name: 'start_date', type: 'timestamptz', nullable: false })
   startDate: Date;
+  @Index('end_date')
   @Column({ name: 'end_date', type: 'timestamptz', nullable: false })
   endDate: Date;
   @Column({ name: 'soft_delete', type: 'boolean', default: false })

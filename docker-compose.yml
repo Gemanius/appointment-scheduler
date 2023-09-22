@@ -7,12 +7,12 @@ services:
     volumes:
       - 'postgresql_master_data:/bitnami/postgresql'
     environment:
-      - POSTGRESQL_REPLICATION_MODE=master
-      - POSTGRESQL_REPLICATION_USER=repl_user
-      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
-      - POSTGRESQL_USERNAME=mahan
-      - POSTGRESQL_PASSWORD=secret
-      - POSTGRESQL_DATABASE=appointments
+      - POSTGRESQL_REPLICATION_MODE
+      - POSTGRESQL_REPLICATION_USER
+      - POSTGRESQL_REPLICATION_PASSWORD
+      - POSTGRESQL_USERNAME
+      - POSTGRESQL_PASSWORD
+      - POSTGRESQL_DATABASE
   postgresql-slave:
     image: 'bitnami/postgresql:latest'
     ports:
@@ -20,13 +20,13 @@ services:
     depends_on:
       - postgresql-master
     environment:
-      - POSTGRESQL_REPLICATION_MODE=slave
-      - POSTGRESQL_REPLICATION_USER=repl_user
-      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
-      - POSTGRESQL_MASTER_HOST=postgresql-master
-      - POSTGRESQL_USERNAME=mahan
-      - POSTGRESQL_PASSWORD=secret
-      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - POSTGRESQL_REPLICATION_MODE
+      - POSTGRESQL_REPLICATION_USER
+      - POSTGRESQL_REPLICATION_PASSWORD
+      - POSTGRESQL_MASTER_HOST
+      - POSTGRESQL_USERNAME
+      - POSTGRESQL_PASSWORD
+      - POSTGRESQL_MASTER_PORT_NUMBER
 
   app:
     stdin_open: true
@@ -37,15 +37,15 @@ services:
       - postgresql-slave
       - postgresql-master
     environment:
-      - MASTER_DB_HOST=postgresql-master
-      - MASTER_DB_PORT=5432
-      - MASTER_DB_USER=mahan
-      - MASTER_DB_PASSWORD=secret
-      - MASTER_DB_NAME=appointments
-      - SLAVE_DB_HOST=postgresql-slave
-      - SLAVE_DB_PORT=5432
-      - SLAVE_DB_USER=mahan
-      - SLAVE_DB_PASSWORD=secret
-      - SLAVE_DB_NAME=appointments
+      - MASTER_DB_HOST
+      - MASTER_DB_PORT
+      - MASTER_DB_USER
+      - MASTER_DB_PASSWORD
+      - MASTER_DB_NAME
+      - SLAVE_DB_HOST
+      - SLAVE_DB_PORT
+      - SLAVE_DB_USER
+      - SLAVE_DB_PASSWORD
+      - SLAVE_DB_NAME
 volumes:
   postgresql_master_data:

@@ -26,7 +26,7 @@ import { AppointmentsChangesHistoryEntity } from './appointment/entity/appointme
         return {
           type: 'postgres',
           host: configs.host,
-          port: configs.port,
+          port: +configs.port,
           username: configs.user,
           password: configs.password,
           database: configs.name,
@@ -48,7 +48,7 @@ import { AppointmentsChangesHistoryEntity } from './appointment/entity/appointme
         return {
           type: 'postgres',
           host: configs.host,
-          port: configs.port,
+          port: +configs.port,
           username: configs.user,
           password: configs.password,
           database: configs.name,

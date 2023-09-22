@@ -18,7 +18,7 @@ export class OrganizationService {
   ) {}
   async createOrganization(data: CreateOrganizationDto) {
     const isOtherOrganizationExist =
-      await this.organizationReadRepository.getOrganizationByName(data.name);
+      await this.organizationReadRepository.getOrganizationByEmail(data.email);
     if (isOtherOrganizationExist)
       throw new HttpException(
         'other user exist with this name',

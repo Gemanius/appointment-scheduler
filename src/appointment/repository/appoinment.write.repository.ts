@@ -18,6 +18,9 @@ export class OrganizationAppointmentWriteRepository {
     @InjectRepository(AppointmentsChangesHistoryEntity, 'write_db')
     private readonly historyRepository: Repository<AppointmentsChangesHistoryEntity>,
   ) {}
+  /**
+   * This method checks the conflicts between organizations.
+   */
   confilictQueryLogic(
     data: {
       creatorId: number;

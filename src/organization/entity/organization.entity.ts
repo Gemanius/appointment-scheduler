@@ -15,8 +15,12 @@ import { AppointmentsChangesHistoryEntity } from '../../appointment/entity/appoi
 export class OrganizationsEntity {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
-  @Column({ name: 'name', type: 'varchar', length: 20 })
+  @Column({ name: 'name', type: 'varchar', length: 30 })
   name: string;
+  @Column({ name: 'profile_image', type: 'varchar', length: 100 })
+  image: string;
+  @Column({ name: 'email', type: 'varchar', length: 50 })
+  email: string;
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
